@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rubendv.be</title>
+    <link>https://rubendv.be/</link>
+    <description>Recent content on rubendv.be</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://rubendv.be/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Site redesign using Hugo &#43; Coder</title>
+      <link>https://rubendv.be/posts/hugo/</link>
+      <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://rubendv.be/posts/hugo/</guid>
+      <description>Today I switched to Hugo and the excellent Coder theme by Luiz de Prá.
+The experience coming from Jekyll has been quite pleasant and the live-reload feature of Hugo is very useful.
+Hopefully this refresh will make me write a second technical blog post very soon ;)</description>
+    </item>
+    
+    <item>
+      <title>Drawing antialiased circles in OpenGL</title>
+      <link>https://rubendv.be/posts/fwidth/</link>
+      <pubDate>Tue, 25 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://rubendv.be/posts/fwidth/</guid>
+      <description>In this post we will look at the fwidth function in GLSL, and how it can be used to draw circles (or other 2D shapes) with resolution independent antialiasing. We will be drawing the circles in the fragment shader, using a threshold on the distance from the center of a quad that fills the entire OpenGL viewport (modeled by two triangles). The simple way to draw four circles on this quad is as shown in the following fragment shader:</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://rubendv.be/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://rubendv.be/about/</guid>
+      <description>My name is Ruben De Visscher. I started as a researcher at the Royal Observatory of Belgium working on solar image processing. Now I am working as a full stack software engineer at Awingu.
+My personal interests include high performance computing, (real time) graphics, programming languages, distributed computing, machine learning and information security.
+I prefer working with modern C++ or one of the newer contenders (e.g. Rust) for bare metal work, or Python when I need something done quickly or with massive library support.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Ruben De Visscher">
+    <meta name="description" content="Ruben De Visscher&#39;s blog">
+    <meta name="keywords" content="blog,developer">
+
+    <base href="https://rubendv.be">
+    <title>
+  Drawing antialiased circles in OpenGL · rubendv.be
+</title>
+
+    <link rel="canonical" href="https://rubendv.be/posts/fwidth/">
+
+    <link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700">
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="https://rubendv.be/css/style.min.css">
+
+    <link rel="icon" type="image/png" href="https://rubendv.be/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://rubendv.be/images/favicon-16x16.png" sizes="16x16">
+
+    
+
+    <meta name="generator" content="Hugo 0.38-DEV" />
+  </head>
+
+  <body>
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://rubendv.be/">
+      rubendv.be
+    </a>
+    
+    <ul class="navigation-list float-right">
+      
+      <li class="navigation-item">
+        <a class="navigation-link" href="/posts/">Blog</a>
+      </li>
+      
+      <li class="navigation-item">
+        <a class="navigation-link" href="/about/">About</a>
+      </li>
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+  <article>
+    <header>
+      <h1 class="title">Drawing antialiased circles in OpenGL</h1>
+      <h2 class="date">March 25, 2014</h2>
+    </header>
+
+    <p>In this post we will look at the <code>fwidth</code> function in GLSL, and how it can be used to draw circles (or other 2D shapes) with resolution independent antialiasing.
+We will be drawing the circles in the fragment shader, using a threshold on the distance from the center of a quad that fills the entire OpenGL viewport (modeled by two triangles).
+The simple way to draw four circles on this quad is as shown in the following fragment shader:</p>
+<div class="highlight"><pre style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-glsl" data-lang="glsl"><span style="color:#0f0;font-weight:bold">#version 330</span>
+    
+<span style="color:#fff;font-weight:bold">in</span> <span style="color:#fff;font-weight:bold">vec2</span> fPosition;
+<span style="color:#fff;font-weight:bold">out</span> <span style="color:#fff;font-weight:bold">vec4</span> fColor;
+
+<span style="color:#fff;font-weight:bold">void</span> main() {
+    <span style="color:#fff;font-weight:bold">vec4</span> colors[<span style="color:#ff0;font-weight:bold">4</span>] = <span style="color:#fff;font-weight:bold">vec4</span>[](
+        <span style="color:#fff;font-weight:bold">vec4</span>(<span style="color:#ff0;font-weight:bold">1.0</span>, <span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">1.0</span>), 
+        <span style="color:#fff;font-weight:bold">vec4</span>(<span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">1.0</span>, <span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">1.0</span>), 
+        <span style="color:#fff;font-weight:bold">vec4</span>(<span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">1.0</span>, <span style="color:#ff0;font-weight:bold">1.0</span>), 
+        <span style="color:#fff;font-weight:bold">vec4</span>(<span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">0.0</span>, <span style="color:#ff0;font-weight:bold">1.0</span>)
+    );
+    fColor = <span style="color:#fff;font-weight:bold">vec4</span>(<span style="color:#ff0;font-weight:bold">1.0</span>);
+
+    <span style="color:#fff;font-weight:bold">for</span>(<span style="color:#fff;font-weight:bold">int</span> row = <span style="color:#ff0;font-weight:bold">0</span>; row &lt; <span style="color:#ff0;font-weight:bold">2</span>; row++) {
+        <span style="color:#fff;font-weight:bold">for</span>(<span style="color:#fff;font-weight:bold">int</span> col = <span style="color:#ff0;font-weight:bold">0</span>; col &lt; <span style="color:#ff0;font-weight:bold">2</span>; col++) {
+            <span style="color:#fff;font-weight:bold">float</span> dist = distance(fPosition, <span style="color:#fff;font-weight:bold">vec2</span>(-<span style="color:#ff0;font-weight:bold">0.50</span> + col, <span style="color:#ff0;font-weight:bold">0.50</span> - row));
+            <span style="color:#fff;font-weight:bold">float</span> alpha = step(<span style="color:#ff0;font-weight:bold">0.45</span>, dist);
+            fColor = mix(colors[row*<span style="color:#ff0;font-weight:bold">2</span>+col], fColor, alpha);
+        }
+    }
+}</code></pre></div>
+<p>This produces the following image:</p>
+
+<p><img src="/images/circles_no_antialiasing.png" alt="Circles drawn without antialiasing" /></p>
+
+<p>As you can see these circles have some not so pretty jagged edges.
+This happens because we have a sharp cutoff between pixels that are completely within the required distance from the center,
+and pixels that are only partially within the required distance from the center.</p>
+
+<p>We can make the circles look better by using a more gradual transition function from an <code>alpha</code> of 0 to 1.
+This is what the <code>smoothstep(a, b, x)</code> function is for. If <code>x &lt;= a</code> or <code>x &gt;= b</code> it produces 0 and 1 respectively,
+like <code>step</code>. However if <code>a &lt; x &lt; b</code> the result is a smooth interpolation between 0 and 1
+based on the position of <code>x</code> in the interval <code>[a, b]</code>.</p>
+
+<p>Using <code>smoothstep</code> we can get a better value for <code>alpha</code>:</p>
+<div class="highlight"><pre style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-glsl" data-lang="glsl"><span style="color:#0f0;font-weight:bold">#version 330</span>
+    
+<span style="color:#fff;font-weight:bold">in</span> <span style="color:#fff;font-weight:bold">vec2</span> fPosition;
+<span style="color:#fff;font-weight:bold">out</span> <span style="color:#fff;font-weight:bold">vec4</span> fColor;
+
+<span style="color:#fff;font-weight:bold">void</span> main() {
+    <span style="color:#007f7f">// [...]</span>
+
+    <span style="color:#fff;font-weight:bold">for</span>(<span style="color:#fff;font-weight:bold">int</span> row = <span style="color:#ff0;font-weight:bold">0</span>; row &lt; <span style="color:#ff0;font-weight:bold">2</span>; row++) {
+        <span style="color:#fff;font-weight:bold">for</span>(<span style="color:#fff;font-weight:bold">int</span> col = <span style="color:#ff0;font-weight:bold">0</span>; col &lt; <span style="color:#ff0;font-weight:bold">2</span>; col++) {
+            <span style="color:#fff;font-weight:bold">float</span> dist = distance(fPosition, <span style="color:#fff;font-weight:bold">vec2</span>(-<span style="color:#ff0;font-weight:bold">0.50</span> + col, <span style="color:#ff0;font-weight:bold">0.50</span> - row));
+            <span style="color:#fff;font-weight:bold">float</span> delta = <span style="color:#ff0;font-weight:bold">0.1</span>;
+            <span style="color:#fff;font-weight:bold">float</span> alpha = smoothstep(<span style="color:#ff0;font-weight:bold">0.45</span>-delta, <span style="color:#ff0;font-weight:bold">0.45</span>, dist);
+            fColor = mix(colors[row*<span style="color:#ff0;font-weight:bold">2</span>+col], fColor, alpha);
+        }
+    }
+}</code></pre></div>
+<p>We get the following image:</p>
+
+<p><img src="/images/circles_antialiasing_no_fwidth_0.1.png" alt="Circles drawn with antialiasing, with a delta of 0.1" /></p>
+
+<p>Unfortunately it turns out our value of <code>0.1</code> for <code>delta</code> is too high.
+With some trial and error, we find that a value of <code>0.01</code> produces a much better balance between blurriness and jaggedness:</p>
+
+<p><img src="/images/circles_antialiasing_no_fwidth_0.01.png" alt="Circles drawn with antialiasing, with a delta of 0.01" /></p>
+
+<p>However, watch what happens when we increase the resolution of this image and look at the center portion:</p>
+
+<p><img src="/images/circles_closeup_no_fwidth.png" alt="Higher resolution circles drawn with antialiasing, with a delta of 0.01" /></p>
+
+<p>The edges are blurry again! This happens because our value for <code>delta</code> is not <em>resolution independent</em>.
+No matter how small you choose delta, as long as it is bigger than 0
+you will always be able to increase the resolution to a point where the edges become blurry, as <code>delta</code> stays constant.</p>
+
+<p>In order to solve this you could pass the current resolution to the shader as uniforms and somehow calculate a suitable <code>delta</code> from that,
+but there is a much easier and better way, which is to use <code>fwidth</code>.
+Simply said, <code>fwidth(x)</code> will calculate a measure of the difference between <code>x</code> in the current fragment shader and the <code>x</code> values in the neighbouring fragments.
+As such it can be used to approximate the width of the current fragment in terms of <code>x</code>.</p>
+
+<p>If we use <code>fwidth(dist)</code> we know how much the distance from the center varies from one fragment to the next,
+and we can decide to have a smooth transition on the edge of the circle that is approximately one fragment wide:</p>
+<div class="highlight"><pre style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-glsl" data-lang="glsl"><span style="color:#0f0;font-weight:bold">#version 330</span>
+    
+<span style="color:#fff;font-weight:bold">in</span> <span style="color:#fff;font-weight:bold">vec2</span> fPosition;
+<span style="color:#fff;font-weight:bold">out</span> <span style="color:#fff;font-weight:bold">vec4</span> fColor;
+
+<span style="color:#fff;font-weight:bold">void</span> main() {
+    <span style="color:#007f7f">// [...]</span>
+
+    <span style="color:#fff;font-weight:bold">for</span>(<span style="color:#fff;font-weight:bold">int</span> row = <span style="color:#ff0;font-weight:bold">0</span>; row &lt; <span style="color:#ff0;font-weight:bold">2</span>; row++) {
+        <span style="color:#fff;font-weight:bold">for</span>(<span style="color:#fff;font-weight:bold">int</span> col = <span style="color:#ff0;font-weight:bold">0</span>; col &lt; <span style="color:#ff0;font-weight:bold">2</span>; col++) {
+            <span style="color:#fff;font-weight:bold">float</span> dist = distance(fPosition, <span style="color:#fff;font-weight:bold">vec2</span>(-<span style="color:#ff0;font-weight:bold">0.50</span> + col, <span style="color:#ff0;font-weight:bold">0.50</span> - row));
+            <span style="color:#fff;font-weight:bold">float</span> delta = fwidth(dist);
+            <span style="color:#fff;font-weight:bold">float</span> alpha = smoothstep(<span style="color:#ff0;font-weight:bold">0.45</span>-delta, <span style="color:#ff0;font-weight:bold">0.45</span>, dist);
+            fColor = mix(colors[row*<span style="color:#ff0;font-weight:bold">2</span>+col], fColor, alpha);
+        }
+    }
+}</code></pre></div>
+<p>Now we get nice smooth circles without having to guess a good value for <code>delta</code>:</p>
+
+<p><img src="/images/circles_antialiasing_fwidth.png" alt="Circles drawn with antialiasing, with a resolution independent delta" /></p>
+
+<p>Additionally, we have gained resolution independence. When we increase the resolution, the edges are still antialiased, but sharply defined instead of blurry:</p>
+
+<p><img src="/images/circles_closeup_fwidth.png" alt="Higher reolution circles drawn with antialiasing, with a resolution independent delta" /></p>
+
+<p>The same technique can be used to draw all sorts of antialiased shapes such as polygons, letters, lines, etc.</p>
+
+  </article>
+</section>
+
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    © 2018 · Ruben De Visscher.
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>
