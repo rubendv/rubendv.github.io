@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on rubendv.be</title>
-    <link>https://rubendv.be/tags/</link>
+    <link>https://rubendv.github.io/tags/</link>
     <description>Recent content in Tags on rubendv.be</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="https://rubendv.be/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://rubendv.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>

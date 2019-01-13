@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on rubendv.be</title>
-    <link>https://rubendv.be/posts/</link>
+    <link>https://rubendv.github.io/posts/</link>
     <description>Recent content in Posts on rubendv.be</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://rubendv.be/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://rubendv.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Site redesign using Hugo &#43; Coder</title>
-      <link>https://rubendv.be/posts/hugo/</link>
+      <link>https://rubendv.github.io/posts/hugo/</link>
       <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://rubendv.be/posts/hugo/</guid>
+      <guid>https://rubendv.github.io/posts/hugo/</guid>
       <description>Today I switched to Hugo and the excellent Coder theme by Luiz de Prá.
 The experience coming from Jekyll has been quite pleasant and the live-reload feature of Hugo is very useful.
 Hopefully this refresh will make me write a second technical blog post very soon ;)</description>
@@ -24,10 +24,10 @@ Hopefully this refresh will make me write a second technical blog post very soon
     
     <item>
       <title>Drawing antialiased circles in OpenGL</title>
-      <link>https://rubendv.be/posts/fwidth/</link>
+      <link>https://rubendv.github.io/posts/fwidth/</link>
       <pubDate>Tue, 25 Mar 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://rubendv.be/posts/fwidth/</guid>
+      <guid>https://rubendv.github.io/posts/fwidth/</guid>
       <description>In this post we will look at the fwidth function in GLSL, and how it can be used to draw circles (or other 2D shapes) with resolution independent antialiasing. We will be drawing the circles in the fragment shader, using a threshold on the distance from the center of a quad that fills the entire OpenGL viewport (modeled by two triangles). The simple way to draw four circles on this quad is as shown in the following fragment shader:</description>
     </item>
     

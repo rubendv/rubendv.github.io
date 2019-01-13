@@ -3,37 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://rubendv.be/posts/hugo/</loc>
+    <loc>https://rubendv.github.io/posts/hugo/</loc>
     <lastmod>2018-04-15T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://rubendv.be/posts/fwidth/</loc>
+    <loc>https://rubendv.github.io/posts/fwidth/</loc>
     <lastmod>2014-03-25T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://rubendv.be/about/</loc>
+    <loc>https://rubendv.github.io/about/</loc>
   </url>
   
   <url>
-    <loc>https://rubendv.be/categories/</loc>
+    <loc>https://rubendv.github.io/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://rubendv.be/posts/</loc>
+    <loc>https://rubendv.github.io/posts/</loc>
     <lastmod>2018-04-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://rubendv.be/tags/</loc>
+    <loc>https://rubendv.github.io/tags/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://rubendv.be/</loc>
+    <loc>https://rubendv.github.io/</loc>
     <lastmod>2018-04-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
